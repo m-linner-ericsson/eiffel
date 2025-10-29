@@ -1,5 +1,5 @@
 <!---
-   This file was generated from ../definitions/EiffelConfidenceLevelModifiedEvent/4.0.1.yml.
+   This file was generated from ../definitions/EiffelConfidenceLevelModifiedEvent/4.1.0.yml.
    See that file for a copyright notice.
 --->
 
@@ -8,6 +8,8 @@
 The EiffelConfidenceLevelModifiedEvent declares that an entity has achieved (or failed to achieve) a certain level of confidence, or in a broader sense to annotate it as being applicable or relevant to a certain case (e.g. fit for release to a certain customer segment or having passed certain criteria). This is particularly useful for promoting various engineering artifacts, such as product revisions, through the continuous integration and delivery pipeline.
 
 Confidence levels may operate at high or low levels of abstraction - ranging from "smokeTestsOk" to "releasable" or "released" - and they may group other confidence levels of lower abstraction levels. They may also be general or very niched, e.g. "releasable" or "releasableToCustomerX". Confidence levels frequently figure in automated delivery interfaces within a tiered system context: lower level tiers issue an agreed confidence level signaling that a new version is ready for integration in a higher level tier.
+
+See [Source Change Approval Using Confidence Levels](../eiffel-syntax-and-usage/clm-source-change-approved.md) for guidance on how to use the CLM event for reviews.
 
 ## Data Members
 
@@ -77,6 +79,12 @@ __Required:__ No
 __Legal targets:__ [EiffelFlowContextDefinedEvent](../eiffel-vocabulary/EiffelFlowContextDefinedEvent.md)  
 __Multiple allowed:__ Yes  
 __Description:__ Identifies the flow context of the event: which is the continuous integration and delivery flow in which this occurred – e.g. which product, project, track or version this is applicable to.
+
+### PREDECESSOR
+__Required:__ No  
+__Legal targets:__ [EiffelConfidenceLevelModifiedEvent](../eiffel-vocabulary/EiffelConfidenceLevelModifiedEvent.md)  
+__Multiple allowed:__ Yes  
+__Description:__ Identifies which other CLM events this event supersedes. For example, in a scenario where CLM events signal reviews, this link indicates which earlies reviews became outdated due to this review.
 
 ### SUBJECT
 __Required:__ Yes  
@@ -227,6 +235,7 @@ __Description:__ A URI pointing at a location from where the schema used when cr
 
 | Version | Introduced in | Changes |
 | ------- | ------------- | ------- |
+| 4.1.0 | Not yet released in an edition | Add PREDECESSOR link (see [Issue 236](https://github.com/eiffel-community/eiffel/issues/236)). |
 | 4.0.1 | Not yet released in an edition | Detail the expected representation of public key and signature in meta.security  (see [Issue 375](https://github.com/eiffel-community/eiffel/issues/375)). |
 | 4.0.0 | Not yet released in an edition | Update meta schema to Draft 2020-12 and add link validation. |
 | 3.4.0 | Not yet released in an edition | Add CONFIDENCE_BASIS link (see [Issue 323](https://github.com/eiffel-community/eiffel/issues/323)). |
