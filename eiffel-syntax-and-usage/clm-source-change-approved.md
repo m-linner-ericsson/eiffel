@@ -48,6 +48,7 @@ The most straightforward approach uses discrete approval states:
 ```
 
 **Supported values:**
+
 - `PENDING`: Review process initiated but not complete
 - `APPROVED`: All required approvals received
 - `REJECTED`: Change rejected during review
@@ -67,6 +68,7 @@ For more nuanced approval processes, use confidence levels that reflect approval
 ```
 
 **Supported values:**
+
 - `INSUFFICIENT`: Below minimum approval threshold
 - `LOW`: Some approvals but below recommended level
 - `MEDIUM`: Adequate approvals for most changes
@@ -86,6 +88,7 @@ For organizations using approval scoring systems:
 ```
 
 The numeric value can represent:
+
 - Percentage of required approvals received
 - Weighted approval score based on reviewer expertise
 - Composite score including automated and human reviews
@@ -138,7 +141,7 @@ Identifies what triggered this confidence level change. This could link to event
 **Multiple allowed:** Yes  
 
 #### PREDECESSOR
-Identifies previous confidence level events that this event supersedes. 
+Identifies previous confidence level events that this event supersedes.
 This link indicates which earlier CLM events have been outdated or replaced by the current confidence level assessment.
 
 **Required:** No  
@@ -150,10 +153,10 @@ This link indicates which earlier CLM events have been outdated or replaced by t
 
 The following example shows one way to model multiple reviews and their dependence:
 
-1. A developer pushes code for review (`SCC 1`). 
-1. The first reviewer gives a `+1` as they think it looks good (`CLM 1`). 
-1. The second reviewer spots a serious mistake and gives a `-2` (`CLM 2`). 
-1. The developer updates the code and pushes the new code for review (`SCC 2`). 
+1. A developer pushes code for review (`SCC 1`).
+1. The first reviewer gives a `+1` as they think it looks good (`CLM 1`).
+1. The second reviewer spots a serious mistake and gives a `-2` (`CLM 2`).
+1. The developer updates the code and pushes the new code for review (`SCC 2`).
 1. The second reviewer accepts the changes by giving a `+2` (`CLM 3`).
 
 ![Override example](./predecessor-simple.png)
@@ -191,9 +194,8 @@ CLM 2 could look like this
 
 ### Value of the PREDECESSOR Link
 
-With the `PREDECESSOR` link you can express which events superseded each other 
-without relying on conventions that might not be known to all readers. 
-
+With the `PREDECESSOR` link you can express which events superseded each other
+without relying on conventions that might not be known to all readers.
 
 ## Integration with Pipeline Workflows
 
@@ -225,11 +227,8 @@ Different pipeline stages can trigger based on different confidence levels:
 2. **Integration tests** trigger on `review-confidence: MEDIUM`  
 3. **Deployment pipeline** triggers on `review-confidence: HIGH`
 
-
-
 <!-- Bookmarks section -->
-[ActT]: ../eiffel-vocabulary/EiffelActivityTriggeredEvent.md
-[ActF]: ../eiffel-vocabulary/EiffelActivityFinishedEvent.md
+
 [CLM]: ../eiffel-vocabulary/EiffelConfidenceLevelModifiedEvent.md
 [SCC]: ../eiffel-vocabulary/EiffelSourceChangeCreatedEvent.md
 [SCS]: ../eiffel-vocabulary/EiffelSourceChangeSubmittedEvent.md
