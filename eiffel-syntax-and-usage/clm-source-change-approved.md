@@ -1,5 +1,5 @@
 <!---
-   Copyright 2022-2023 Ericsson AB and others.
+   Copyright 2025 Ericsson AB.
    For a full list of individual contributors, please see the commit history.
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 # Source Change Approval Using Confidence Levels
 
-_Source change approval_ is the process of signaling when a source change has been reviewed and approved according to project requirements. This document describes how to represent source change approval states using [EiffelConfidenceLevelModifiedEvent][CLM] events, providing a standardized way to communicate approval status in the Eiffel protocol.
+_Source change approval_ is the process of signaling when a source change has been reviewed and approved according to project requirements. This document describes how to represent source change approval states using [EiffelConfidenceLevelModifiedEvent][CLM] events, providing a standardized way to communicate approval status using the Eiffel protocol.
 
 Source change approval is a critical gate in software development workflows, determining when changes are ready for integration. By modeling approval as confidence levels, teams can create flexible approval workflows that integrate naturally with existing Eiffel-based CI/CD pipelines.
 
@@ -30,7 +30,9 @@ The [EiffelConfidenceLevelModifiedEvent][CLM] provides a natural way to represen
 - **Standard tooling**: Existing Eiffel tools understand confidence level events
 - **Flexible values**: Supports different approval schemes and requirements
 
-## Approval State Representations
+## Ideas for Approval State Representations
+
+To exemplify how the CLM event could be used, we show some alternatives.
 
 ### Simple Approval States
 
@@ -96,7 +98,9 @@ The numeric value can represent:
 {
   "meta": {
     "type": "EiffelConfidenceLevelModifiedEvent",
-    "version": "3.0.0"
+    "version": "4.1.0",
+    "time": 1234567890,
+    "id": "aaaaaaaa-bbbb-5ccc-8ddd-eeeeeeeeeee0"
   },
   "data": {
     "name": "review-approval",
@@ -104,12 +108,12 @@ The numeric value can represent:
     "issuer": {
       "name": "Review Management System",
       "email": "reviews@example.com"
-    },
+    }
   },
   "links": [
     {
       "type": "SUBJECT",
-      "target": "source-change-event-id"
+      "target": "<source-change-event-id>"
     }
   ]
 }
@@ -133,11 +137,69 @@ Identifies what triggered this confidence level change. This could link to event
 **Legal targets:** Any  
 **Multiple allowed:** Yes  
 
+#### PREDECESSOR
+Identifies previous confidence level events that this event supersedes. 
+This link indicates which earlier CLM events have been outdated or replaced by the current confidence level assessment.
+
+**Required:** No  
+**Legal sources:** [EiffelConfidenceLevelModifiedEvent][CLM]  
+**Legal targets:** [EiffelConfidenceLevelModifiedEvent][CLM]  
+**Multiple allowed:** Yes
+
+## Override Examples
+
+The following example shows one way to model multiple reviews and their dependence:
+
+1. A developer pushes code for review (`SCC 1`). 
+1. The first reviewer gives a `+1` as they think it looks good (`CLM 1`). 
+1. The second reviewer spots a serious mistake and gives a `-2` (`CLM 2`). 
+1. The developer updates the code and pushes the new code for review (`SCC 2`). 
+1. The second reviewer accepts the changes by giving a `+2` (`CLM 3`).
+
+![Override example](./predecessor-simple.png)
+
+CLM 2 could look like this
+
+```json
+{
+  "meta": {
+    "type": "EiffelConfidenceLevelModifiedEvent",
+    "version": "4.1.0",
+    "time": 1234567890,
+    "id": "aaaaaaaa-bbbb-5ccc-8ddd-eeeeeeeeeee0"
+  },
+  "data": {
+    "name": "review",
+    "value": "-2",
+    "issuer": {
+      "name": "Bob Jones",
+      "email": "bob.jones@example.com"
+    }
+  },
+  "links": [
+    {
+      "type": "SUBJECT",
+      "target": "<source-change-1-event-id>"
+    },
+    {
+      "type": "PREDECESSOR",
+      "target": "<confidence-level-modified-1-event-id>"
+    }
+  ]
+}
+```
+
+### Value of the PREDECESSOR Link
+
+With the `PREDECESSOR` link you can express which events superseded each other 
+without relying on conventions that might not be known to all readers. 
+
+
 ## Integration with Pipeline Workflows
 
 ### Pre-merge Pipeline Gating
 
-Pipeline activities can wait for appropriate confidence levels before proceeding:
+Pipeline activities can wait for appropriate confidence levels before proceeding as shown with this pseudocode:
 
 ```json
 {
@@ -162,35 +224,6 @@ Different pipeline stages can trigger based on different confidence levels:
 1. **Basic CI triggers** on `review-confidence: LOW`
 2. **Integration tests** trigger on `review-confidence: MEDIUM`  
 3. **Deployment pipeline** triggers on `review-confidence: HIGH`
-
-### Approval Workflow Examples
-
-#### Simple Approval Flow
-
-```
-EiffelSourceChangeCreatedEvent
-↓
-EiffelConfidenceLevelModifiedEvent (value: "PENDING")
-↓
-EiffelConfidenceLevelModifiedEvent (value: "APPROVED")
-↓
-Pipeline triggered
-```
-
-#### Multi-stage Approval Flow
-
-```
-EiffelSourceChangeCreatedEvent
-↓
-EiffelConfidenceLevelModifiedEvent (name: "review-approval", value: "PENDING")
-↓
-EiffelConfidenceLevelModifiedEvent (name: "review-approval", value: "APPROVED")
-↓
-EiffelConfidenceLevelModifiedEvent (name: "security-review", value: "APPROVED")
-↓
-Final pipeline triggered
-```
-
 
 
 
