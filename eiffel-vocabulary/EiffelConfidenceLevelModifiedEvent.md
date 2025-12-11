@@ -84,7 +84,7 @@ __Description:__ Identifies the flow context of the event: which is the continuo
 __Required:__ No  
 __Legal targets:__ [EiffelConfidenceLevelModifiedEvent](../eiffel-vocabulary/EiffelConfidenceLevelModifiedEvent.md)  
 __Multiple allowed:__ Yes  
-__Description:__ Identifies which other CLM events this event supersedes. For example, in a scenario where CLM events signal reviews, this link indicates which earlies reviews became outdated due to this review.
+__Description:__ Identifies previous confidence level events that this event supersedes. This link indicates which earlier CLM events have been outdated or replaced by the current confidence level assessment.
 
 ### SUBJECT
 __Required:__ Yes  

@@ -38,9 +38,8 @@ represent approval states by treating approval as a confidence level of the
 source change. This approach offers several advantages:
 
 - **Semantic alignment**: Approval represents confidence in the quality and readiness of a change
-- **Graduated states**: Can represent progressive approval states (pending, partial, full) (?????)
 - **Standard tooling**: Existing Eiffel tools understand confidence level events
-- **Flexible values**: Supports different approval schemes and requirements (?????)
+- **Flexible names**: Supports different approval schemes and requirements
 
 ## Ideas for Approval State Representations
 
@@ -59,32 +58,12 @@ The most straightforward approach uses discrete approval states:
 }
 ```
 
-**Proposed  values:**
+**Idea of values:**
 
 - `automatedChecksPass`: The automatic checks has passed
 - `codeReviewed`: Review process initiated but not complete
 - `approvalPolicyMet`: Some code might need architects or guardians to approve before merging
 - `readyToMerge`: All required approvals received
-
-### Graduated Confidence Levels
-
-For more nuanced approval processes, use confidence levels that reflect approval strength:
-
-```json
-{
-  "data": {
-    "name": "thoroughReviewComplete",
-    "value": "SUCCESS"
-  }
-}
-```
-
-**Proposed  values:**
-
-- `basicReviewComplete`: For some changes a basic review might be enough. For example, spelling error
-- `thoroughReviewComplete`: For most changes of code and vital document they need a thorough review.
-- `securityReviewComplete`: Most organizations have security requirement that one need to review against
-- `releaseReadiness`: Will signal readiness to release 
 
 ### Numeric Confidence Scores
 
@@ -136,6 +115,13 @@ The numeric value can represent:
 
 ### Link Types Involved
 
+This section describes the link types most relevant for source change approval
+workflows. The CLM event supports additional link types (such as
+CONFIDENCE_BASIS, CONTEXT, FLOW_CONTEXT, and SUB_CONFIDENCE_LEVEL) that may be
+useful for more complex scenarios — see
+the [EiffelConfidenceLevelModifiedEvent specification][CLM] for complete
+details.
+
 #### SUBJECT
 
 Identifies the source change that this confidence level applies to. This link
@@ -146,7 +132,7 @@ or [EiffelSourceChangeSubmittedEvent][SCS].
 **Required:** Yes  
 **Legal sources:** [EiffelConfidenceLevelModifiedEvent][CLM]  
 **Legal targets:** [EiffelSourceChangeCreatedEvent][SCC], [EiffelSourceChangeSubmittedEvent][SCS]  
-**Multiple allowed:** No  
+**Multiple allowed:** Yes  
 
 #### CAUSE
 
@@ -162,7 +148,7 @@ changes.
 #### PREDECESSOR
 
 Identifies previous confidence level events that this event supersedes. This
-link indicates which earlier CLM events have been outdated or replaced by the
+link indicates what earlier CLM events have been outdated or replaced by the
 current confidence level assessment.
 
 **Required:** No  
