@@ -58,12 +58,15 @@ The most straightforward approach uses discrete approval states:
 }
 ```
 
-**Idea of values:**
+**Ideas for Confidence Level Names:**
 
 - `automatedChecksPass`: The automatic checks has passed
-- `codeReviewed`: Review process initiated but not complete
-- `approvalPolicyMet`: Some code might need architects or guardians to approve before merging
-- `readyToMerge`: All required approvals received
+- `codeReviewed`: Code has been reviewed by at least one team member and no blocking issues have been identified. This
+   indicates the change has received initial review attention, but does not constitute approval for merging
+- `codeReviewApproved`: Code has received formal approval from authorized reviewer(s) according to project policy.
+- `approvalPolicyMet`: Custom approval policy fulfilled. For example, some code might need architects or guardians to
+   approve before merging
+- `readyToMerge`: Automated test have passed, code reviewed, and all required approvals received
 
 ### Numeric Confidence Scores
 
@@ -107,7 +110,7 @@ The numeric value can represent:
   "links": [
     {
       "type": "SUBJECT",
-      "target": "<source-change-event-id>"
+      "target": "<source-change-created-event-id>"
     }
   ]
 }
@@ -130,7 +133,6 @@ relevant [EiffelSourceChangeCreatedEvent][SCC]
 or [EiffelSourceChangeSubmittedEvent][SCS].
 
 **Required:** Yes  
-**Legal sources:** [EiffelConfidenceLevelModifiedEvent][CLM]  
 **Legal targets:** [EiffelSourceChangeCreatedEvent][SCC], [EiffelSourceChangeSubmittedEvent][SCS]  
 **Multiple allowed:** Yes  
 
@@ -141,7 +143,6 @@ events representing individual reviews, automated analysis results, or policy
 changes.
 
 **Required:** No  
-**Legal sources:** [EiffelConfidenceLevelModifiedEvent][CLM]  
 **Legal targets:** Any  
 **Multiple allowed:** Yes  
 
@@ -152,7 +153,6 @@ link indicates what earlier CLM events have been outdated or replaced by the
 current confidence level assessment.
 
 **Required:** No  
-**Legal sources:** [EiffelConfidenceLevelModifiedEvent][CLM]  
 **Legal targets:** [EiffelConfidenceLevelModifiedEvent][CLM]  
 **Multiple allowed:** Yes
 
@@ -162,9 +162,9 @@ The following example shows one way to model multiple reviews and their dependen
 
 1. A developer pushes code for review (`SCC 1`).
 1. The first reviewer gives a `+1` as they think it looks good which generates a `codeReviewed`:`SUCCESS`  (`CLM 1`).
-1. The second reviewer spots a serious mistake and gives a `-2` which generates a `readyToMerge`:`FAILURE` (`CLM 2`).
+1. The second reviewer spots a serious mistake and gives a `-2` which generates a `codeReviewApproved`:`FAILURE` (`CLM 2`).
 1. The developer updates the code and pushes the new code for review (`SCC 2`).
-1. The second reviewer accepts the changes by giving a `+2` which generates a `readyToMerge`:`SUCCESS` (`CLM 3`).
+1. The second reviewer accepts the changes by giving a `+2` which generates a `codeReviewApproved`:`SUCCESS` (`CLM 3`).
 
 ![Override example](./predecessor-simple.png)
 
@@ -179,7 +179,7 @@ CLM 2 could look like this
     "id": "aaaaaaaa-bbbb-5ccc-8ddd-eeeeeeeeeee0"
   },
   "data": {
-    "name": "readyToMerge",
+    "name": "codeReviewApproved",
     "value": "FAILURE",
     "issuer": {
       "name": "Bob Jones",
@@ -189,11 +189,11 @@ CLM 2 could look like this
   "links": [
     {
       "type": "SUBJECT",
-      "target": "<source-change-1-event-id>"
+      "target": "<SCC1-event-id>"
     },
     {
       "type": "PREDECESSOR",
-      "target": "<confidence-level-modified-1-event-id>"
+      "target": "<CLM1-event-id>"
     }
   ]
 }
@@ -220,7 +220,7 @@ Pipeline activities can wait for appropriate confidence levels before proceeding
         "data.value": "SUCCESS"
       },
       "linkType": "SUBJECT",
-      "linkTarget": "source-change-id"
+      "linkTarget": "<source-change-created-event-id>"
     }
   }
 }
