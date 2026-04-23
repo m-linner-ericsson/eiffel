@@ -148,9 +148,7 @@ changes.
 
 #### PREDECESSOR
 
-Identifies previous confidence level events that this event supersedes. This
-link indicates what earlier CLM events have been outdated or replaced by the
-current confidence level assessment.
+Identifies a previous confidence level event that the current event outdates or otherwise replaces.
 
 **Required:** No  
 **Legal targets:** [EiffelConfidenceLevelModifiedEvent][CLM]  
@@ -198,6 +196,10 @@ CLM 2 could look like this
   ]
 }
 ```
+
+This example models a code review system where an approval from one user does not cancel the rejection from another user,
+hence CLM 3 does not replace CLM 2. A consumer that tracks the approval state of source changes should list both CLM 2
+and CLM 3 as current.
 
 ### Value of the PREDECESSOR Link
 
