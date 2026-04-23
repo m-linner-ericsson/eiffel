@@ -197,9 +197,10 @@ CLM 2 could look like this
 }
 ```
 
-This example models a code review system where an approval from one user does not cancel the rejection from another user,
-hence CLM 3 does not replace CLM 2. A consumer that tracks the approval state of source changes should list both CLM 2
-and CLM 3 as current.
+This example models a code review system where a new approval (`+2`) on an updated source change does not cancel a
+previous rejection (`-2`) on the original source change, hence CLM 3 does not replace CLM 2. A consumer that tracks the
+approval state of source changes should list both CLM 2 and CLM 3 as current — CLM 2 for SCC 1 and CLM 3 for SCC 2. It
+will not list CLM 1, since CLM 2 replaced it.
 
 ### Value of the PREDECESSOR Link
 
