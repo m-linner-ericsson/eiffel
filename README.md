@@ -52,6 +52,7 @@ Visit [Eiffel Community](https://eiffel-community.github.io) to get started and 
    1. [Event Schemas](./eiffel-syntax-and-usage/event-schemas.md)
    1. [Event Categories](./eiffel-syntax-and-usage/event-categories.md)
    1. [Eiffel and Cloud Events](./eiffel-syntax-and-usage/eiffel-and-cloud-events.md)
+   1. [Source Change Approval Using Confidence Levels](./eiffel-syntax-and-usage/clm-source-change-approved.md)
 1. The Eiffel Vocabulary
    1. [EiffelActivityTriggeredEvent (ActT)](./eiffel-vocabulary/EiffelActivityTriggeredEvent.md)
    1. [EiffelActivityCanceledEvent (ActC)](./eiffel-vocabulary/EiffelActivityCanceledEvent.md)
